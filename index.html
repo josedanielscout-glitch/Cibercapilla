@@ -827,7 +827,17 @@
             }
         }
 
-       
+        // Theme
+        function setupTheme() {
+            const btn = document.getElementById('themeToggle');
+            btn.onclick = () => {
+                currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.body.className = currentTheme === 'dark' 
+                    ? 'bg-slate-950 text-slate-200 min-h-screen pb-20 overflow-x-hidden' 
+                    : 'bg-stone-50 text-stone-900 min-h-screen pb-20 overflow-x-hidden light';
+                document.getElementById('themeIcon').setAttribute('data-lucide', currentTheme === 'dark' ? 'sun' : 'moon');
+                lucide.createIcons();
+            };
         }
     </script>
 </body>
