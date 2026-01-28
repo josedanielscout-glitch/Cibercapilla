@@ -73,9 +73,7 @@
         .hidden-tab { display: none; }
         .active-tab { border-bottom: 2px solid #d97706; color: #d97706; opacity: 1; }
         
-        .glow-effect {
-            box-shadow: 0 10px 40px -10px rgba(251, 191, 36, 0.3);
-        }
+        .glow-effect { box-shadow: 0 10px 40px -10px rgba(251, 191, 36, 0.3); }
 
         .gospel-highlight {
             border: 1.5px solid #d97706 !important;
@@ -83,23 +81,23 @@
             box-shadow: 0 0 15px rgba(217, 119, 6, 0.1);
         }
 
-        #apiModal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); }
+        #toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(-20px); }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-200 min-h-screen pb-20 overflow-x-hidden">
 
-    <!-- Modal de API Key -->
-    <div id="apiModal" class="flex items-center justify-center p-4">
-        <div class="glass p-8 rounded-3xl max-w-md w-full border border-amber-500/20">
-            <h3 class="text-xl font-bold mb-4">Configuración de la Biblia</h3>
-            <p class="text-sm opacity-70 mb-6">Para ver los textos de la Biblia Latinoamericana en GitHub, necesitas una clave de Gemini API gratuita.</p>
-            <input type="password" id="apiKeyInput" placeholder="Pega tu clave aquí..." class="w-full bg-slate-900 border border-white/10 rounded-xl p-3 mb-4 outline-none focus:border-amber-500 text-white">
-            <div class="flex gap-3">
-                <button onclick="saveApiKey()" class="flex-1 bg-amber-600 py-2 rounded-xl font-bold text-sm text-white">Guardar</button>
-                <button onclick="closeApiModal()" class="flex-1 bg-white/5 py-2 rounded-xl font-bold text-sm">Cerrar</button>
-            </div>
-            <p class="text-[10px] mt-6 opacity-40">Obtén una clave gratis en: <a href="https://aistudio.google.com/app/apikey" target="_blank" class="underline">Google AI Studio</a></p>
-        </div>
+    <!-- Notificación -->
+    <div id="toast" class="bg-amber-600 text-white px-6 py-3 rounded-full font-sans text-xs font-bold uppercase tracking-widest shadow-2xl pointer-events-none">
+        Petición depositada y vela encendida
     </div>
 
     <!-- Header -->
@@ -113,9 +111,6 @@
         </div>
         
         <div class="flex gap-4 items-center font-sans">
-            <button onclick="openApiModal()" class="p-2 rounded-full hover:bg-white/5 transition-colors opacity-40 hover:opacity-100" title="Configurar Biblia">
-                <i data-lucide="settings" class="w-5 h-5"></i>
-            </button>
             <a href="https://ucn.edu.co/consultame" target="_blank" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-full text-xs font-bold transition-all shadow-lg shadow-indigo-500/20">
                 <i data-lucide="users" class="w-4 h-4"></i> Asesoría Espiritual
             </a>
@@ -168,7 +163,7 @@
                     </p>
                 </div>
 
-                <div class="flex flex-wrap justify-center gap-12 pt-6" id="candlesGrid"></div>
+                <div class="flex flex-wrap justify-center gap-10 md:gap-14 pt-6" id="candlesGrid"></div>
                 <div id="candlePrayer" class="mt-12 p-8 rounded-3xl border glass max-w-xl mx-auto hidden shadow-2xl">
                     <p class="text-xl italic font-light leading-relaxed" id="prayerText"></p>
                 </div>
@@ -185,9 +180,6 @@
                             Participar en Facebook Live
                         </a>
                     </div>
-                    <a href="https://encuestas.ucn.edu.co/index.php/819977" target="_blank" class="text-amber-500 font-bold text-sm underline underline-offset-4 transition-colors font-sans">
-                        Enviar intenciones para la Misa
-                    </a>
                 </div>
             </section>
 
@@ -198,7 +190,7 @@
                     <div class="flex justify-between items-center mb-8">
                         <div class="flex flex-col text-left">
                             <span id="rosaryStepIndicator" class="text-[10px] font-bold uppercase tracking-[0.3em] text-amber-500 mb-1 font-sans"></span>
-                            <h2 id="rosaryStepTitle" class="text-2xl font-bold"></h2>
+                            <h2 id="rosaryStepTitle" class="text-2xl font-bold">Santo Rosario</h2>
                         </div>
                         <button onclick="resetRosary()" class="p-2 opacity-40 hover:opacity-100 transition-opacity">
                             <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
@@ -207,7 +199,6 @@
                     <div class="min-h-[250px] flex flex-col justify-center text-center px-4 overflow-y-auto">
                         <p id="rosaryInstruction" class="text-xs uppercase tracking-widest opacity-40 mb-6 font-bold font-sans"></p>
                         <p id="rosaryText" class="text-lg md:text-xl italic leading-relaxed font-light whitespace-pre-line"></p>
-                        <div id="rosarySubPrayers" class="mt-8 space-y-4 hidden"></div>
                     </div>
                     <div class="flex justify-between items-center mt-12 pt-8 border-t border-amber-500/10 font-sans">
                         <button id="rosaryPrev" onclick="moveRosary(-1)" class="flex items-center gap-2 text-xs uppercase tracking-widest font-bold hover:text-amber-500 transition-colors disabled:opacity-20">
@@ -218,7 +209,6 @@
                         </button>
                     </div>
                 </div>
-                <p id="rosaryDayInfo" class="text-center text-[10px] opacity-40 font-bold uppercase tracking-widest font-sans mt-4"></p>
             </section>
 
             <!-- Tab: Coronilla -->
@@ -228,7 +218,7 @@
                     <div class="flex justify-between items-center mb-8">
                         <div class="flex flex-col text-left">
                             <span id="coronillaStepIndicator" class="text-[10px] font-bold uppercase tracking-[0.3em] text-red-500 mb-1 font-sans"></span>
-                            <h2 id="coronillaStepTitle" class="text-2xl font-bold">La Divina Misericordia</h2>
+                            <h2 id="coronillaStepTitle" class="text-2xl font-bold">Misericordia</h2>
                         </div>
                         <button onclick="resetCoronilla()" class="p-2 opacity-40 hover:opacity-100 transition-opacity">
                             <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
@@ -237,7 +227,6 @@
                     <div class="min-h-[250px] flex flex-col justify-center text-center px-4 overflow-y-auto">
                         <p id="coronillaInstruction" class="text-xs uppercase tracking-widest opacity-40 mb-6 font-bold font-sans"></p>
                         <p id="coronillaText" class="text-lg md:text-xl italic leading-relaxed font-light whitespace-pre-line"></p>
-                        <div id="coronillaSubPrayers" class="mt-8 space-y-4 hidden text-left"></div>
                     </div>
                     <div class="flex justify-between items-center mt-12 pt-8 border-t border-red-500/10 font-sans">
                         <button id="coronillaPrev" onclick="moveCoronilla(-1)" class="flex items-center gap-2 text-xs uppercase tracking-widest font-bold hover:text-red-500 transition-colors disabled:opacity-20">
@@ -254,19 +243,19 @@
             <section id="tab-papa" class="hidden-tab max-w-3xl mx-auto animate-fade-in">
                 <div id="papaIntentionContent" class="p-10 rounded-[3rem] border glass text-center space-y-6">
                     <i data-lucide="globe" class="text-amber-500 mx-auto w-12 h-12"></i>
-                    <h3 id="papaMonthName" class="text-amber-600 font-bold uppercase tracking-widest text-xs"></h3>
+                    <h3 id="papaMonthName" class="text-amber-600 font-bold uppercase tracking-widest text-xs font-sans"></h3>
                     <p id="papaIntentionTitle" class="text-xl font-bold"></p>
                     <p id="papaIntentionDesc" class="text-lg italic opacity-70 leading-relaxed"></p>
                 </div>
             </section>
 
-            <!-- Tab: Biblia -->
+            <!-- Tab: Biblia (Sin Clase / Conexión Directa) -->
             <section id="tab-biblia" class="hidden-tab max-w-4xl mx-auto animate-fade-in">
                 <div class="mb-6 flex items-center gap-4">
                     <button id="bibleBackBtn" onclick="bibleBack()" class="hidden flex items-center gap-2 text-xs uppercase tracking-widest opacity-60 hover:opacity-100 p-2 font-sans">
                         <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver
                     </button>
-                    <h2 id="bibleTitle" class="text-xl font-bold">Biblia Latinoamericana</h2>
+                    <h2 id="bibleTitle" class="text-xl font-bold">Sagrada Biblia</h2>
                 </div>
                 <div id="bibleLibrary" class="space-y-10"></div>
                 <div id="bibleChapters" class="hidden glass p-8 rounded-3xl border">
@@ -276,7 +265,7 @@
                 <div id="bibleReader" class="hidden glass p-8 md:p-12 rounded-[2rem] border min-h-[400px]">
                     <div id="bibleLoading" class="flex flex-col items-center justify-center h-[300px] gap-4">
                         <i data-lucide="refresh-cw" class="w-8 h-8 animate-spin text-amber-500"></i>
-                        <p class="text-xs uppercase tracking-widest animate-pulse font-sans">Consultando la Biblia...</p>
+                        <p class="text-xs uppercase tracking-widest animate-pulse font-sans">Obteniendo texto sagrado...</p>
                     </div>
                     <div id="bibleContent" class="hidden max-w-2xl mx-auto">
                         <div class="mb-10 pb-6 border-b border-amber-500/10 flex justify-between items-end">
@@ -287,12 +276,6 @@
                             </div>
                         </div>
                         <div id="readingText" class="text-xl leading-relaxed italic opacity-90 font-light space-y-6"></div>
-                    </div>
-                    <div id="bibleError" class="hidden text-center py-20 space-y-6">
-                        <i data-lucide="alert-circle" class="mx-auto w-12 h-12 text-red-500"></i>
-                        <p class="text-lg font-bold">La Biblia requiere configuración</p>
-                        <p class="text-sm opacity-60 max-w-md mx-auto font-sans">Para que la Biblia funcione en GitHub, necesitas configurar tu propia Gemini API Key gratuita.</p>
-                        <button onclick="openApiModal()" class="bg-amber-600 px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest font-sans text-white">Configurar ahora</button>
                     </div>
                 </div>
             </section>
@@ -320,23 +303,7 @@
     </footer>
 
     <script>
-        // --- Configuración API ---
-        let apiKey = localStorage.getItem('ucn_bible_apikey') || ""; 
-
-        function openApiModal() { document.getElementById('apiModal').style.display = 'flex'; }
-        function closeApiModal() { document.getElementById('apiModal').style.display = 'none'; }
-        function saveApiKey() {
-            const val = document.getElementById('apiKeyInput').value;
-            if(val) {
-                apiKey = val;
-                localStorage.setItem('ucn_bible_apikey', val);
-                closeApiModal();
-                if(selectedBook) readChapter(selectedChapter);
-            }
-        }
-
-        // --- Estado Global ---
-        let currentTab = 'altar';
+        // --- Datos Globales ---
         let rosaryStep = 0;
         let coronillaStep = 0;
         let selectedBook = null;
@@ -344,65 +311,58 @@
         let litCandles = new Set();
         let peticiones = JSON.parse(localStorage.getItem('peticiones') || '[]');
 
-        // --- Datos ---
         const candles = [
             { id: 1, label: 'Almas del Purgatorio', prayer: 'Que la luz perpetua las ilumine en su descanso eterno. Amén.' },
             { id: 2, label: 'Salud de los Enfermos', prayer: 'Señor Jesús, visita a los que sufren y dales tu alivio soberano. Amén.' },
             { id: 3, label: 'Por las Familias', prayer: 'Sagrada Familia, haz de nuestros hogares iglesias domésticas de paz. Amén.' },
             { id: 4, label: 'Paz en el Mundo', prayer: 'Haz de mí un instrumento de tu paz donde hay guerra. Amén.' },
             { id: 5, label: 'Acción de Gracias', prayer: 'Te damos gracias por el don de la vida y tu amor sin fin. Amén.' },
+            { id: 6, label: 'Peticiones del Muro', prayer: 'Señor, escucha el clamor de quienes han depositado su esperanza en este muro.' }
         ];
 
         const papaIntentions = [
-            { month: "Enero", title: "Por los educadores", desc: "Oremos para que los educadores sean testigos creíbles, enseñando la fraternidad en lugar de la confrontación." },
-            { month: "Febrero", title: "Por los enfermos terminales", desc: "Oremos para que los enfermos terminales y sus familias reciban siempre los cuidados y el acompañamiento necesarios." },
-            { month: "Marzo", title: "Por los nuevos mártires", desc: "Oremos para que quienes en diversas partes del mundo arriesgan su vida por el Evangelio contagien a la Iglesia su valentía." },
-            { month: "Abril", title: "Por el papel de la mujer", desc: "Oremos para que la dignidad y la riqueza de las mujeres sean reconocidas en todas las culturas." },
-            { month: "Mayo", title: "Por la formación de religiosos y seminaristas", desc: "Oremos para que los religiosos, las religiosas y los seminaristas crezcan en su camino vocacional." },
-            { month: "Junio", title: "Por los que huyen de su país", desc: "Oremos para que los migrantes que huyen de las guerras o del hambre encuentren aceptación y nuevas oportunidades." },
-            { month: "Julio", title: "Por los ancianos", desc: "Oremos para que los ancianos sean valorados por su experiencia y sabiduría." },
-            { month: "Agosto", title: "Por los líderes políticos", desc: "Oremos para que los líderes políticos estén al servicio de su propio pueblo, trabajando por el desarrollo humano integral." },
-            { month: "Septiembre", title: "Por el clamor de la Tierra", desc: "Oremos para que cada uno de nosotros escuche con el corazón el clamor de la Tierra y de las víctimas de catástrofes." },
-            { month: "Octubre", title: "Por una misión compartida", desc: "Oremos para que la Iglesia siga apoyando un estilo de vida sinodal, bajo el signo de la corresponsabilidad." },
-            { month: "Noviembre", title: "Por quienes han perdido un hijo", desc: "Oremos para que todos los padres que lloran la muerte de un hijo encuentren apoyo en la comunidad." },
-            { month: "Diciembre", title: "Por los voluntarios", desc: "Oremos para que las organizaciones de voluntariado y promoción humana encuentren personas deseosas de comprometerse." }
+            { month: "Enero", title: "Por los educadores", desc: "Oremos para que los educadores sean testigos creíbles." },
+            { month: "Febrero", title: "Por los enfermos terminales", desc: "Oremos para que reciban siempre los cuidados necesarios." },
+            { month: "Marzo", title: "Por los nuevos mártires", desc: "Oremos por quienes arriesgan su vida por el Evangelio." },
+            { month: "Abril", title: "Por el papel de la mujer", desc: "Oremos para que la dignidad de las mujeres sea reconocida." },
+            { month: "Mayo", title: "Por los religiosos", desc: "Oremos para que crezcan en su camino vocacional." },
+            { month: "Junio", title: "Por los migrantes", desc: "Oremos para que encuentren aceptación y nuevas oportunidades." },
+            { month: "Julio", title: "Por los ancianos", desc: "Oremos para que sean valorados por su experiencia y sabiduría." },
+            { month: "Agosto", title: "Por los políticos", desc: "Oremos para que estén al servicio del bien común." },
+            { month: "Septiembre", title: "Por la Tierra", desc: "Oremos para que escuchemos el clamor de la Tierra." },
+            { month: "Octubre", title: "Por la sinodalidad", desc: "Oremos por una misión compartida en la Iglesia." },
+            { month: "Noviembre", title: "Por el duelo", desc: "Oremos por quienes han perdido un hijo." },
+            { month: "Diciembre", title: "Por los voluntarios", desc: "Oremos por quienes se comprometen con el bien común." }
         ];
 
         const bibleData = {
             "Nuevo Testamento": [
                 { name: "Mateo", chapters: 28, isGospel: true }, { name: "Marcos", chapters: 16, isGospel: true }, { name: "Lucas", chapters: 24, isGospel: true }, { name: "Juan", chapters: 21, isGospel: true },
-                { name: "Hechos", chapters: 28 }, { name: "Romanos", chapters: 16 }, { name: "1 Corintios", chapters: 16 }, { name: "2 Corintios", chapters: 13 },
-                { name: "Gálatas", chapters: 6 }, { name: "Efesios", chapters: 6 }, { name: "Apocalipsis", chapters: 22 }
+                { name: "Hechos", chapters: 28 }, { name: "Romanos", chapters: 16 }, { name: "Apocalipsis", chapters: 22 }
             ],
             "Antiguo Testamento": [
-                { name: "Génesis", chapters: 50 }, { name: "Éxodo", chapters: 40 }, { name: "Levítico", chapters: 27 }, { name: "Números", chapters: 36 }, { name: "Deuteronomio", chapters: 34 },
-                { name: "Salmos", chapters: 150 }, { name: "Sabiduría", chapters: 19, isCatholicOnly: true }, { name: "Sirácide", chapters: 51, isCatholicOnly: true }
+                { name: "Génesis", chapters: 50 }, { name: "Éxodo", chapters: 40 }, { name: "Salmos", chapters: 150 }, { name: "Proverbios", chapters: 31 }
             ]
         };
 
         const oracionesRosario = [
-            { title: "Inicio", instruction: "Señal de la Cruz", text: "Por la señal de la Santa Cruz, de nuestros enemigos líbranos, Señor. En el nombre del Padre..." },
-            { title: "Misterio 1", instruction: "Meditemos", text: "Primer misterio del día..." },
-            { title: "Misterio 2", instruction: "Meditemos", text: "Segundo misterio del día..." },
-            { title: "Misterio 3", instruction: "Meditemos", text: "Tercer misterio del día..." },
-            { title: "Misterio 4", instruction: "Meditemos", text: "Cuarto misterio del día..." },
-            { title: "Misterio 5", instruction: "Meditemos", text: "Quinto misterio del día..." },
-            { title: "Final", instruction: "Salve Regina", text: "Dios te salve, Reina y Madre de misericordia..." }
+            { title: "Inicio", instruction: "Señal de la Cruz", text: "Por la señal de la Santa Cruz..." },
+            { title: "Misterio 1", instruction: "Meditación", text: "Meditemos el primer misterio del día..." },
+            { title: "Misterio 2", instruction: "Meditación", text: "Meditemos el segundo misterio del día..." },
+            { title: "Misterio 3", instruction: "Meditación", text: "Meditemos el tercer misterio del día..." },
+            { title: "Misterio 4", instruction: "Meditación", text: "Meditemos el cuarto misterio del día..." },
+            { title: "Misterio 5", instruction: "Meditación", text: "Meditemos el quinto misterio del día..." },
+            { title: "Final", instruction: "La Salve", text: "Dios te salve, Reina y Madre..." }
         ];
 
         const coronillaSteps = [
-            { title: "Inicio", instruction: "Señal de la Cruz", text: "En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén." },
-            { title: "Oraciones iniciales", instruction: "Padre Nuestro, Ave María y Credo", text: "Padre Nuestro, que estás en el cielo...\nDios te salve, María...\nCreo en Dios, Padre Todopoderoso..." },
-            { title: "Decena 1", instruction: "Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre, el Alma y la Divinidad de tu amadísimo Hijo, Nuestro Señor Jesucristo..." },
-            { title: "Decena 2", instruction: "Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre..." },
-            { title: "Decena 3", instruction: "Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre..." },
-            { title: "Decena 4", instruction: "Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre..." },
-            { title: "Decena 5", instruction: "Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre..." },
-            { title: "Conclusión", instruction: "Santo Dios (3 veces)", text: "Santo Dios, Santo Fuerte, Santo Inmortal, ten piedad de nosotros y del mundo entero." }
+            { title: "Inicio", instruction: "Señal de la Cruz", text: "En el nombre del Padre..." },
+            { title: "Oraciones iniciales", instruction: "Padre Nuestro, Ave María y Credo", text: "Padre Nuestro...\nAve María...\nCredo..." },
+            { title: "Decena", instruction: "Padre Eterno", text: "Padre Eterno, te ofrezco el Cuerpo y la Sangre..." },
+            { title: "Conclusión", instruction: "Santo Dios", text: "Santo Dios, Santo Fuerte, Santo Inmortal..." }
         ];
 
-        // --- Funciones Principales ---
-
+        // --- Inicialización ---
         window.onload = () => {
             lucide.createIcons();
             renderCandles();
@@ -418,11 +378,9 @@
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden-tab'));
             const target = document.getElementById(`tab-${tabId}`);
             if(target) target.classList.remove('hidden-tab');
-            
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-tab'));
             const clickedBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.getAttribute('onclick').includes(tabId));
             if(clickedBtn) clickedBtn.classList.add('active-tab');
-            currentTab = tabId;
         }
 
         function renderCandles() {
@@ -441,7 +399,7 @@
                             </div>
                             <div class="candle-body ${isLit ? 'glow-effect' : ''}" style="background: radial-gradient(circle at 50% 0%, ${isLit ? '#fff' : '#fffdf2'} 0%, #fffdf2 100%); opacity: ${isLit ? '1' : '0.6'}; border: 1px solid rgba(0,0,0,0.05);"></div>
                         </div>
-                        <span class="mt-4 text-[10px] font-bold uppercase tracking-widest transition-colors ${isLit ? 'text-amber-500' : 'opacity-40'}">${c.label}</span>
+                        <span class="mt-4 text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-colors ${isLit ? 'text-amber-500' : 'opacity-40'}">${c.label}</span>
                     </button>
                 </div>`;
             }).join('');
@@ -449,77 +407,17 @@
 
         function toggleCandle(id) {
             if (litCandles.has(id)) litCandles.delete(id); else litCandles.add(id);
-            const candle = candles.find(c => c.id === id);
             const prayerEl = document.getElementById('candlePrayer');
             if(litCandles.has(id)) {
                 prayerEl.classList.remove('hidden');
-                document.getElementById('prayerText').innerText = `"${candle.prayer}"`;
+                document.getElementById('prayerText').innerText = `"${candles.find(c => c.id === id).prayer}"`;
             } else {
                 prayerEl.classList.add('hidden');
             }
             renderCandles();
         }
 
-        // --- Rosario ---
-        function updateRosary() {
-            const step = oracionesRosario[rosaryStep];
-            const indicator = document.getElementById('rosaryStepIndicator');
-            const title = document.getElementById('rosaryStepTitle');
-            const inst = document.getElementById('rosaryInstruction');
-            const txt = document.getElementById('rosaryText');
-            const prog = document.getElementById('rosaryProgress');
-            
-            if(indicator) indicator.innerText = `Paso ${rosaryStep + 1} de ${oracionesRosario.length}`;
-            if(title) title.innerText = step.title;
-            if(inst) inst.innerText = step.instruction;
-            if(txt) txt.innerText = step.text;
-            if(prog) prog.style.width = `${((rosaryStep + 1) / oracionesRosario.length) * 100}%`;
-            
-            const dayInfo = document.getElementById('rosaryDayInfo');
-            if(dayInfo) {
-                const day = new Date().toLocaleDateString('es-ES', { weekday: 'long' });
-                dayInfo.innerText = `Hoy es ${day}`;
-            }
-        }
-        function moveRosary(dir) {
-            rosaryStep = Math.max(0, Math.min(oracionesRosario.length - 1, rosaryStep + dir));
-            updateRosary();
-        }
-        function resetRosary() { rosaryStep = 0; updateRosary(); }
-
-        // --- Coronilla ---
-        function updateCoronilla() {
-            const step = coronillaSteps[coronillaStep];
-            const indicator = document.getElementById('coronillaStepIndicator');
-            const title = document.getElementById('coronillaStepTitle');
-            const inst = document.getElementById('coronillaInstruction');
-            const txt = document.getElementById('coronillaText');
-            const prog = document.getElementById('coronillaProgress');
-            
-            if(indicator) indicator.innerText = `Paso ${coronillaStep + 1} de ${coronillaSteps.length}`;
-            if(title) title.innerText = step.title;
-            if(inst) inst.innerText = step.instruction;
-            if(txt) txt.innerText = step.text;
-            if(prog) prog.style.width = `${((coronillaStep + 1) / coronillaSteps.length) * 100}%`;
-        }
-        function moveCoronilla(dir) {
-            coronillaStep = Math.max(0, Math.min(coronillaSteps.length - 1, coronillaStep + dir));
-            updateCoronilla();
-        }
-        function resetCoronilla() { coronillaStep = 0; updateCoronilla(); }
-
-        // --- Papa ---
-        function updatePapaIntention() {
-            const current = papaIntentions[new Date().getMonth()];
-            const monthEl = document.getElementById('papaMonthName');
-            const titleEl = document.getElementById('papaIntentionTitle');
-            const descEl = document.getElementById('papaIntentionDesc');
-            if(monthEl) monthEl.innerText = current.month;
-            if(titleEl) titleEl.innerText = current.title;
-            if(descEl) descEl.innerText = current.desc;
-        }
-
-        // --- Biblia ---
+        // --- Biblia (Base de datos funcional sin clave) ---
         function renderBibleLibrary() {
             const lib = document.getElementById('bibleLibrary');
             if(!lib) return;
@@ -549,30 +447,21 @@
             document.getElementById('bibleReader').classList.remove('hidden');
             document.getElementById('bibleLoading').classList.remove('hidden');
             document.getElementById('bibleContent').classList.add('hidden');
-            document.getElementById('bibleError').classList.add('hidden');
-
-            if (!apiKey) {
-                document.getElementById('bibleLoading').classList.add('hidden');
-                document.getElementById('bibleError').classList.remove('hidden');
-                return;
-            }
 
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: `Texto Biblia Latinoamericana Católica: ${selectedBook.name} capítulo ${num}. Devuelve solo los versículos, sin comentarios ni introducciones.` }] }] })
-                });
+                // Usando Bible-API.com (Gratis, Sin Clave, Versión en Español RV1909 por defecto para máxima compatibilidad)
+                const bookMap = { "Apocalipsis": "revelation", "Hechos": "acts" };
+                const bookQuery = bookMap[selectedBook.name] || selectedBook.name;
+                const res = await fetch(`https://bible-api.com/${bookQuery}+${num}?translation=pdt`);
                 const data = await res.json();
-                if (data.error) throw new Error();
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "No se pudo cargar el texto sagrado.";
+                
                 document.getElementById('bibleLoading').classList.add('hidden');
                 document.getElementById('bibleContent').classList.remove('hidden');
                 document.getElementById('readingBookTitle').innerText = `${selectedBook.name} ${num}`;
-                document.getElementById('readingText').innerText = text;
+                document.getElementById('readingText').innerText = data.text || "No se encontró el texto.";
             } catch {
                 document.getElementById('bibleLoading').classList.add('hidden');
-                document.getElementById('bibleError').classList.remove('hidden');
+                document.getElementById('readingText').innerText = "Error de conexión con la base de datos bíblica.";
             }
         }
 
@@ -584,7 +473,6 @@
                 document.getElementById('bibleChapters').classList.add('hidden');
                 document.getElementById('bibleLibrary').classList.remove('hidden');
                 document.getElementById('bibleBackBtn').classList.add('hidden');
-                document.getElementById('bibleTitle').innerText = "Biblia Latinoamericana";
             }
         }
 
@@ -593,11 +481,38 @@
             if(next > 0 && next <= selectedBook.chapters) readChapter(next);
         }
 
-        // --- Peticiones ---
+        // --- Funciones de Oración ---
+        function updateRosary() {
+            const step = oracionesRosario[rosaryStep];
+            document.getElementById('rosaryStepIndicator').innerText = `Paso ${rosaryStep + 1} de ${oracionesRosario.length}`;
+            document.getElementById('rosaryStepTitle').innerText = step.title;
+            document.getElementById('rosaryInstruction').innerText = step.instruction;
+            document.getElementById('rosaryText').innerText = step.text;
+            document.getElementById('rosaryProgress').style.width = `${((rosaryStep + 1) / oracionesRosario.length) * 100}%`;
+        }
+        function moveRosary(dir) { rosaryStep = Math.max(0, Math.min(oracionesRosario.length - 1, rosaryStep + dir)); updateRosary(); }
+        function resetRosary() { rosaryStep = 0; updateRosary(); }
+
+        function updateCoronilla() {
+            const step = coronillaSteps[coronillaStep];
+            document.getElementById('coronillaStepIndicator').innerText = `Paso ${coronillaStep + 1} de ${coronillaSteps.length}`;
+            document.getElementById('coronillaStepTitle').innerText = step.title;
+            document.getElementById('coronillaInstruction').innerText = step.instruction;
+            document.getElementById('coronillaText').innerText = step.text;
+            document.getElementById('coronillaProgress').style.width = `${((coronillaStep + 1) / coronillaSteps.length) * 100}%`;
+        }
+        function moveCoronilla(dir) { coronillaStep = Math.max(0, Math.min(coronillaSteps.length - 1, coronillaStep + dir)); updateCoronilla(); }
+        function resetCoronilla() { coronillaStep = 0; updateCoronilla(); }
+
+        function updatePapaIntention() {
+            const current = papaIntentions[new Date().getMonth()];
+            document.getElementById('papaMonthName').innerText = current.month;
+            document.getElementById('papaIntentionTitle').innerText = current.title;
+            document.getElementById('papaIntentionDesc').innerText = current.desc;
+        }
+
         function renderPrayers() {
-            const list = document.getElementById('prayersList');
-            if(!list) return;
-            list.innerHTML = peticiones.map(p => `<div class="p-4 glass rounded-xl italic text-sm mb-3 border-l-2 border-amber-500/20">"${p.text}"</div>`).join('');
+            document.getElementById('prayersList').innerHTML = peticiones.map(p => `<div class="p-4 glass rounded-xl italic text-sm mb-3 border-l-2 border-amber-500/20">"${p.text}"</div>`).join('');
         }
 
         function savePrayer() {
@@ -606,15 +521,17 @@
                 peticiones.unshift({ text: input.value });
                 localStorage.setItem('peticiones', JSON.stringify(peticiones));
                 input.value = '';
+                litCandles.add(6);
+                renderCandles();
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
                 renderPrayers();
             }
         }
 
-        // --- Tema ---
         function setupTheme() {
-            const btn = document.getElementById('themeToggle');
-            if(!btn) return;
-            btn.onclick = () => {
+            document.getElementById('themeToggle').onclick = () => {
                 const isDark = document.body.classList.contains('bg-slate-950');
                 if(isDark) {
                     document.body.className = 'bg-stone-50 text-stone-900 min-h-screen pb-20 light';
