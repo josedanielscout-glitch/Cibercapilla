@@ -117,7 +117,7 @@
                 </div>
                 <div>
                     <h1 class="text-2xl font-black uppercase tracking-tight text-stone-900 leading-none">Cibercapilla UCN</h1>
-                    <p class="text-[11px] uppercase tracking-[0.3em] font-sans font-bold text-amber-700 mt-1">Fidelidad al Evangelio</p>
+                    <p class="text-[11px] uppercase tracking-[0.3em] font-sans font-bold text-amber-700 mt-1">Pastoral y Bienestar Institucional</p>
                 </div>
             </div>
             
@@ -141,10 +141,10 @@
                     <div class="max-w-2xl relative z-10">
                         <div class="flex items-center justify-center gap-2 mb-3">
                             <span class="w-8 h-[2px] bg-amber-400"></span>
-                            <p class="text-amber-300 text-xs font-bold uppercase tracking-[0.3em] font-sans">En el 2026, avanzar al encuentro de Cristo</p>
+                            <p class="text-amber-300 text-xs font-bold uppercase tracking-[0.3em] font-sans">En el 2026, avanzar al encuentro con Cristo</p>
                             <span class="w-8 h-[2px] bg-amber-400"></span>
                         </div>
-                        <p class="text-white text-xl md:text-3xl font-serif italic leading-tight drop-shadow-lg">“Hasta ver a Cristo formado en ustedes.” (Gal. 4,19)</p>
+                        <p class="text-white text-xl md:text-3xl font-serif italic leading-tight drop-shadow-lg">“Hasta ver a Cristo formado en ustedes” (Gal.4,19)</p>
                     </div>
                 </div>
             </div>
@@ -174,12 +174,20 @@
             <button onclick="switchTab('evangelio')" class="nav-btn flex items-center gap-2 px-6 py-3 rounded-full text-xs uppercase tracking-widest shadow-sm">
                 <i data-lucide="book-open-check" class="w-4 h-4"></i> Evangelio
             </button>
+            <!-- NUEVO: Botón Rezando voy -->
+            <button onclick="switchTab('rezandovoy')" class="nav-btn flex items-center gap-2 px-6 py-3 rounded-full text-xs uppercase tracking-widest shadow-sm">
+                <i data-lucide="headphones" class="w-4 h-4"></i> Rezando voy
+            </button>
             <button onclick="switchTab('ordo')" class="nav-btn flex items-center gap-2 px-6 py-3 rounded-full text-xs uppercase tracking-widest shadow-sm">
                 <i data-lucide="calendar-days" class="w-4 h-4"></i> Ordo
             </button>
             <button onclick="switchTab('muro')" class="nav-btn flex items-center gap-2 px-6 py-3 rounded-full text-xs uppercase tracking-widest shadow-sm">
                 <i data-lucide="message-square" class="w-4 h-4"></i> Peticiones
             </button>
+             <!-- NUEVO: Botón Comunidad -->
+            <a href="https://chat.whatsapp.com/GlKBNbj1b7iH5m13VJ1NYR" target="_blank" class="nav-btn flex items-center gap-2 px-6 py-3 rounded-full text-xs uppercase tracking-widest shadow-sm hover:text-green-600 hover:border-green-200 transition-colors">
+                <i data-lucide="message-circle" class="w-4 h-4"></i> Comunidad
+            </a>
         </nav>
 
         <div id="tabContent" class="min-h-[60vh] pb-12">
@@ -347,6 +355,18 @@
                         </a>
                     </div>
                     <iframe src="https://www.ciudadredonda.org/evangelio-lecturas-hoy/" class="w-full h-full border-0" allowfullscreen></iframe>
+                </div>
+            </section>
+
+             <!-- Tab: Rezando Voy (NUEVA PESTAÑA) -->
+             <section id="tab-rezandovoy" class="hidden-tab max-w-6xl mx-auto animate-fade-in h-[85vh]">
+                <div class="w-full h-full rounded-[2.5rem] overflow-hidden border border-stone-200 shadow-xl bg-white flex flex-col relative">
+                     <div class="absolute top-4 right-4 z-10">
+                         <a href="https://www.rezandovoy.org/" target="_blank" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2 rounded-full text-xs font-bold font-sans shadow-lg transition-colors flex items-center gap-2">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> Abrir en pestaña nueva
+                        </a>
+                    </div>
+                    <iframe src="https://www.rezandovoy.org/" class="w-full h-full border-0" allowfullscreen></iframe>
                 </div>
             </section>
 
