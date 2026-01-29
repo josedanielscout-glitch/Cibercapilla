@@ -329,14 +329,14 @@
                         <p id="papaIntentionTitle" class="text-2xl font-bold text-stone-800 mb-6 font-sans"></p>
                         <p id="papaIntentionDesc" class="text-xl italic leading-relaxed text-stone-600 font-medium"></p>
                         
-                        <!-- Video del Papa Agregado -->
+                        <!-- Video del Papa Agregado (CORREGIDO) -->
                         <div class="mt-10 rounded-2xl overflow-hidden shadow-lg border border-stone-200">
                             <div class="relative w-full pb-[56.25%] bg-black">
                                 <iframe class="absolute top-0 left-0 w-full h-full" 
-                                    src="https://www.youtube.com/watch?v=2ujj5Dg0xJo" 
+                                    src="https://www.youtube.com/embed/2ujj5Dg0xJo" 
                                     title="El Video del Papa" 
                                     frameborder="0" 
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                                     allowfullscreen>
                                 </iframe>
                             </div>
@@ -699,7 +699,26 @@
             document.getElementById('papaIntentionDesc').innerText = intention.desc;
         }
 
-        function renderPrayers() { document.getElementById('prayersList').innerHTML = peticiones.map(p => `<div class="p-6 bg-white rounded-2xl border border-stone-200 border-l-4 border-l-amber-500 shadow-sm animate-fade-in"><p class="text-lg italic font-normal text-stone-800">"${p.text}"</p><span class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mt-3 block font-sans">${p.date}</span></div>`).join(''); }
+        function renderPrayers() { 
+            const list = document.getElementById('prayersList');
+            list.innerHTML = peticiones.map(p => `
+                <div class="p-6 bg-white rounded-2xl border border-stone-200 shadow-sm animate-fade-in flex gap-4 items-start">
+                    <div class="flex-shrink-0 mt-1">
+                        <div class="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center border border-amber-100 shadow-inner">
+                             <i data-lucide="flame" class="w-5 h-5 text-amber-500 fill-amber-500 animate-pulse"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow">
+                        <p class="text-lg italic font-normal text-stone-800">"${p.text}"</p>
+                        <span class="text-[10px] font-bold text-stone-400 uppercase tracking-widest mt-2 block font-sans">${p.date}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Importante: Renderizar los iconos nuevos creados dinámicamente
+            lucide.createIcons();
+        }
+
         function savePrayer() {
             const text = document.getElementById('prayerInput').value;
             if (text.trim()) {
