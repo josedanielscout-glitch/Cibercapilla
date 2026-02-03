@@ -227,7 +227,7 @@
                 </div>
                 <div class="space-y-4">
                     <h2 class="text-5xl font-serif italic text-gradient-gold drop-shadow-sm pb-2">Altar de Intenciones</h2>
-                    <p class="text-xs font-black uppercase tracking-[0.3em] text-stone-400 font-sans">Haz clic sobre las velas para encenderlas y realizar la oración</p>
+                    <p class="text-xs font-black uppercase tracking-[0.3em] text-stone-400 font-sans">Haz clic sobre las velas para encenderlas y realiza la oración correspondiente que aparece en la parte de abajo</p>
                 </div>
                 <div class="flex flex-wrap justify-center gap-16 pt-8" id="candlesGrid"></div>
                 <div id="candlePrayer" class="mt-12 p-10 rounded-[2.5rem] bg-amber-50/50 border border-amber-200 max-w-2xl mx-auto hidden shadow-xl animate-fade-in text-center relative">
@@ -495,7 +495,7 @@
                 
                 <div class="grid md:grid-cols-2 gap-10">
                     <div class="space-y-6">
-                        <h3 class="flex items-center gap-3 text-teal-700 font-black uppercase tracking-widest text-xs border-b-2 border-teal-200 pb-4 font-sans">
+                        <h3 class="flex items-center gap-3 text-amber-600 font-black uppercase tracking-widest text-xs border-b-2 border-teal-200 pb-4 font-sans">
                             <i data-lucide="hand-helping" class="w-5 h-5"></i> Corporales
                         </h3>
                         <div id="corporalGrid" class="grid gap-4"></div>
@@ -713,7 +713,7 @@ Escuchar a Dios para vivir mejor. Que no pase un día sin recibir una Palabra de
                     <div class="max-w-2xl relative z-10">
                         <div class="flex items-center gap-2 mb-3">
                             <span class="w-8 h-[2px] bg-amber-400"></span>
-                            <p class="text-amber-300 text-xs font-bold uppercase tracking-[0.3em] font-sans">Reflexión Diaria</p>
+                            <p class="text-amber-300 text-xs font-bold uppercase tracking-[0.3em] font-sans">Jesús les dijo a sus amigos:</p>
                         </div>
                         <p class="text-white text-xl md:text-3xl font-serif italic leading-tight drop-shadow-lg">"Yo soy el camino, y la verdad, y la vida; nadie viene al Padre, sino por mí."</p>
                     </div>
@@ -957,7 +957,7 @@ Escuchar a Dios para vivir mejor. Que no pase un día sin recibir una Palabra de
                 { title: "Inicio", instruction: "Señal de la Cruz", text: "Por la señal de la Santa Cruz, de nuestros enemigos líbranos, Señor, Dios nuestro. En el nombre del Padre, y del Hijo, y del Espíritu Santo. Amén." },
                 { title: "Acto de Contrición", instruction: "Pide perdón", text: "Jesús, mi Señor y Redentor, yo me arrepiento de todos los pecados que he cometido hasta hoy, y me pesa de todo corazón, porque con ellos he ofendido a un Dios tan bueno. Propongo firmemente no volver a pecar y confío que por tu infinita misericordia me has de conceder el perdón de mis culpas y me has de llevar a la vida eterna. Amén." }
             ];
-            misterios.lista.forEach((m, i) => seq.push({ title: `Misterio ${i + 1}`, instruction: `Meditemos el Misterio ${misterios.tipo}`, text: m, isMystery: true }));
+            misterios.lista.forEach((m, i) => seq.push({ title: `Misterio ${i + 1}`, instruction: `Meditemos los Misterios ${misterios.tipo}`, text: m, isMystery: true }));
             seq.push({ title: "La Salve", instruction: "Oración final", text: oraciones.salve });
             seq.push({ title: "Finalización", instruction: "Bajo tu amparo", text: "Bajo tu amparo nos acogemos, santa Madre de Dios; no deseches las súplicas que te dirigimos en nuestras necesidades, antes bien, líbranos de todo peligro, ¡oh Virgen siempre gloriosa y benedicta! Amén." });
             return seq;
